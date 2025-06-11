@@ -1,4 +1,3 @@
-// C:/WorkHome/AlphaEdtech/WebSockets/chatOnline/server.js
 const WebSocket = require("ws");
 const {
   uniqueNamesGenerator,
