@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat em Tempo Real</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="theme-switcher-container">
+      <input type="checkbox" name="checkbox" id="checkbox" />
+      <label for="checkbox" class="label"> </label>
+    </div>
+
+    <h1>Chat WebSocket</h1>
+    
+    <div class="chat-container">
+        <div id="messages"></div>
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Digite uma mensagem...">
+            <button class="button" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        const themeCheckbox = document.getElementById("checkbox");
+        themeCheckbox.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        const socket = new WebSocket("ws://localhost:8080");
+        const messagesDiv = document.getElementById("messages");
+        const messageInput = document.getElementById("messageInput");
+
+        function addMessage(data) {
+            const messageElement = document.createElement("p");
+
+            if (data.type === 'chat') {
+                const usernameSpan = document.createElement('span');
+                usernameSpan.textContent = `${data.username}: `;
+                usernameSpan.style.color = data.color;
+                usernameSpan.style.fontWeight = 'bold';
+                
+                messageElement.appendChild(usernameSpan);
+                messageElement.appendChild(document.createTextNode(data.message));
+
+            } else if (data.type === 'info') {
+                messageElement.textContent = data.message;
+                messageElement.classList.add('info-message');
+            } else {
+                 messageElement.textContent = data.message;
+                 messageElement.classList.add('local-info');
+                 if(data.style) {
+                     Object.assign(messageElement.style, data.style);
+                 }
+            }
+            
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Rolagem automática
+        }
+
+        socket.onopen = () => {
+            addMessage({ type: 'local', message: 'Você se conectou ao chat!', style: {color: 'green'} });
+        };
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            addMessage(data);
+        };
+
+        // Evento de conexão fechada
+        socket.onclose = () => {
+            addMessage({ type: 'local', message: 'Você foi desconectado.', style: {color: 'red'} });
+        };
+
+        // Enviar mensagem
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                socket.send(message);
+                messageInput.value = "";
+                messageInput.focus();
+            }
+        }
+        
+        // Permitir envio com a tecla Enter
+        messageInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
