@@ -2,18 +2,6 @@
 
 Um sistema de chat simples e em tempo real, desenvolvido com Node.js e WebSockets nativos. A aplicação permite comunicação instantânea entre múltiplos usuários em um único canal de chat global.
 
-## 📋 Índice
-
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Como Usar](#como-usar)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Contribuição](#contribuição)
-- [Licença](#licença)
-
 ## 🚀 Sobre o Projeto
 
 O ChatOnline é uma aplicação web leve de chat em tempo real. O projeto utiliza a biblioteca `ws` do Node.js para estabelecer uma comunicação bidirecional de baixa latência entre o cliente (navegador) e o servidor.
